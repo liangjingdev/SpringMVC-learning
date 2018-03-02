@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+	
+	<!-- 这里声明了InputProductController和SaveProductController两个控制器类，并分别映射
+	到/input-product和/save-product -->
+	<bean name="/input-product"
+	  class="controller.InputProductController"/>
+	<bean name="/save-product"
+	  class="controller.SaveProductController"/>
+	<!-- pring MVC中的视图解析器负责解析视图。可以通过在配置文件中定义一个ViewResolver来配置视图
+	解析器。如下视图解析器配置有前缀和后缀两个属性。这样一来，view路径将缩短。例如，仅需提供“myPage”，而不必再设置
+	视图路径为/WEB-INF/jsp/myPage.jsp，视图解析器将会自动增加前缀和后缀。-->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	  <property name="prefix" value="/WEB-INF/jsp/"/>
+	  <property name="suffix" value=".jsp"/>
+	</bean>
+	  
+</beans>
+
+
+<!-- 要使用Spring MVC中自带的Dispatcher Servlet，需要把它配置在部署描述符(web.xml文件)，应用servlet和
+servlet-mapping元素。Dispatcher servlet将使用Spring MVC诸多默认的组件。此外，初始化时，它会寻找一个在应用程序的
+WEB-INF目录下的配置文件，该配置文件的命名规则如下：servletName-servlet.xml
+其中，servletName是在部署描述符中的Dispatcher servlet的名称。此外，也可以把Spring MVC的配置文件放在应用程序目录
+中的任何地方，用srevlet定义的init-param元素，以便Dispatcher servlet加载到该文件。init-param元素拥有一个值为
+contextConfigLocation的param-name元素，其param-value元素则包含配置文件的路径。-->
