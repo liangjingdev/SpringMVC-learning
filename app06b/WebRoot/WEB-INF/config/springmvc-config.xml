@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd     
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+	<context:component-scan base-package="controller" />
+	<!-- 注意还需要给这个Formatter添加一个component-scan元素 -->
+	<context:component-scan base-package="formatter" />
+
+	<mvc:annotation-driven conversion-service="conversionService" />
+
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/*.html" location="/" />
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+    <!-- 为了在Spring MVC应用程序中使用Formatter，需要利用conversionService bean对它进行注册。 -->
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="formatters">
+			<set>
+				<bean class="formatter.LocalDateFormatter">
+					<constructor-arg type="java.lang.String" value="MM-dd-yyyy" />
+				</bean>
+			</set>
+		</property>
+	</bean>
+	
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/resource/messages" />
+    </bean>
+	
+</beans>
