@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd     
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+        
+    <context:component-scan base-package="controller"/>
+     
+    <!-- 要给annotation-driven元素的conversion-service属性赋bean名称（此处是conversionService） -->
+    <mvc:annotation-driven conversion-service="conversionService"/>
+    <mvc:resources mapping="/css/**" location="/css/"/>
+    <mvc:resources mapping="/*.html" location="/"/>
+    
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    
+    <!-- 为了使用Spring MVC应用程序中定制的Converter，需要在Spring MVC配置文件中编写一个conversionService bean。
+    Bean的类名必须为org.springframework.context.support.Conversion-ServiceFactoryBean。这个bean必须包含
+    一个converters属性，它将列出要在应用程序中使用的所有定制Converter。即注册你所编写的Converter。 -->
+    <bean id="conversionService" 
+            class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <bean class="converter.StringToDateConverter">
+                    <!-- 给该Converter的构造器参数进行赋值 -->
+                    <constructor-arg type="java.lang.String" value="MM-dd-yyyy"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/resource/messages" />
+    </bean>
+	
+</beans>
