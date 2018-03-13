@@ -1,0 +1,28 @@
+
+
+像图片或者HTML文件这样的静态资源，在浏览器中打开正确的URL即可下载。
+ * 只要该资源是放在应用程序的目录下，或者放在应用程序目录的子目录下，而不是放在WEB-INF下，
+ * Servlet/JSP容器就会将该资源发送到浏览器。然而，有时静态资源是保存在应用程序目录外，或者是保存在某一个
+ * 数据库中，或者有时需要控制它的访问权限，防止其他网站交叉引用它。如果出现以上任意一种情况，都必须通过编程
+ * 来发送资源。简言之，通过编程进行的文件下载，使你可以有选择的将文件发送到浏览器。
+ * 
+ * 为了将像文件这样的资源发送到浏览器，需要在控制器中完成以下工作：
+ * （1）对请处理方法使用void返回类型，并在方法中添加HttpServletResponse参数。
+ * （2）将响应的内容类型设为文件的内容类型。Content-Type标题在某个实体的body中定义数据类型，并包含媒体
+ * 类型和子类型标识符。欲了解标准的内容类型，可以登录http://www.iana.org/assignments/media-types。如果
+ * 不清楚内容类型，并且希望浏览器始终显示Save As（另存为）对话框，则将它设为APPLICATION/OCTET-STREAM。
+ * 这个值是不区分大小写的。
+ * （3）添加一个名为Content-Disposition的HTTP响应标题，并赋值attachment；filename=fileName，这里的fileName
+ * 是默认文件名，应该出现在File Download（文件下载）对话框中。它通常与文件同名，但是也并非一定如此。
+ 
+ 例如：以下代码将一个文件发送到浏览器：
+ FileInputStream fis = new FileInputStream(file);
+ BufferedInputStream bis = new BufferedInputStream(fis);
+ byte[] bytes = new byte[bis.available()];
+ response.setContentType(contentType);
+ OutputStream os = response.getOutputStream();
+ bis.read(bytes);
+ os.write(bytes);
+ 为了编程将一个文件发送到浏览器，首先要读取该文件作为FileInputStream，并将内容加载到一个字节数组。
+ 随后，获取HttpServletResponse的OutputStream，并调用其write方法传入字节数组。
+ 
